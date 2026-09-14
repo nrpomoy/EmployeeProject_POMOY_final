@@ -53,10 +53,6 @@ public class MyDate {
         this.year = year;
     }
 
-    public boolean isSameMonthAndDay(MyDate other) {
-        return other != null && this.month == other.month && this.date == other.date;
-    }
-
     public void displayMyDate() {
         System.out.println("Date: " + this.toString());
     }
