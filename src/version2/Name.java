@@ -7,15 +7,24 @@ public class Name {
     private String suffix;     // optional
 
     public Name() {
-        this("N/A", null, "N/A", null);
+        this.firstName = "N/A";
+        this.middleName = "N/A";
+        this.lastName = "N/A";
+        this.suffix = "";
     }
 
     public Name(String firstName, String lastName) {
-        this(firstName, null, lastName, null);
+        this.firstName = firstName;
+        this.middleName = "N/A";
+        this.lastName = lastName;
+        this.suffix = "";
     }
 
     public Name(String firstName, String middleName, String lastName) {
-        this(firstName, middleName, lastName, null);
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.suffix = "";
     }
 
     public Name(String firstName, String middleName, String lastName, String suffix) {
@@ -57,20 +66,36 @@ public class Name {
         this.suffix = suffix;
     }
 
+    private String getMiddleInitial() {
+        if (middleName != null && !middleName.trim().isEmpty() && !middleName.equalsIgnoreCase("N/A")) {
+            return middleName.trim().substring(0, 1).toUpperCase() + ".";
+        }
+        return "";
+    }
+
     public void displayName() {
-        System.out.println("Name: " + this.toString());
+        String mi = getMiddleInitial();
+        if (mi.isEmpty()) {
+            System.out.printf("%s, %s%n", lastName, firstName);
+        } else {
+            System.out.printf("%s, %s %s%n", lastName, firstName, mi);
+        }
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(firstName);
-        if (middleName != null && !middleName.trim().isEmpty()) {
-            sb.append(" ").append(middleName);
+        StringBuilder sb = new StringBuilder();
+        sb.append(lastName).append(", ").append(firstName);
+
+        String mi = getMiddleInitial();
+        if (!mi.isEmpty()) {
+            sb.append(" ").append(mi);
         }
-        sb.append(" ").append(lastName);
+
         if (suffix != null && !suffix.trim().isEmpty()) {
-            sb.append(" ").append(suffix);
+            sb.append(" ").append(suffix.trim());
         }
+
         return sb.toString();
     }
 }
