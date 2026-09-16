@@ -3,45 +3,36 @@ package version2;
 public class HourlyEmployee {
     private int empID;
     private Name empName;
-    private float totalHoursWorked;
-    private double ratePerHour;
     private MyDate birthDate;
     private MyDate dateHired;
+    private float totalHoursWorked;
+    private double ratePerHour;
 
-    public HourlyEmployee(){
-        empID = 0;
-        empName = null;
-        totalHoursWorked = 0;
-        ratePerHour = 0;
+    public HourlyEmployee() {
+        this.empID = 0;
+        this.empName = new Name();
         this.birthDate = new MyDate();
         this.dateHired = new MyDate();
+        this.totalHoursWorked = 0.0f;
+        this.ratePerHour = 0.0;
     }
 
-    public HourlyEmployee(int empID, Name empName){
+    public HourlyEmployee(int empID, Name empName, MyDate birthDate, MyDate dateHired) {
         this.empID = empID;
         this.empName = empName;
-        totalHoursWorked = 0;
-        ratePerHour = 0;
-        this.birthDate = new MyDate();
-        this.dateHired = new MyDate();
-    }
-
-    public HourlyEmployee(int empID, Name empName, float totalHoursWorked, double ratePerHour){
-        this.empID = empID;
-        this.empName = empName;
-        this.totalHoursWorked = totalHoursWorked;
-        this.ratePerHour = ratePerHour;
-        this.birthDate = new MyDate();
-        this.dateHired = new MyDate();
-    }
-
-    public HourlyEmployee(int empID, Name empName, float totalHoursWorked, double ratePerHour, MyDate birthDate, MyDate dateHired){
-        this.empID = empID;
-        this.empName = empName;
-        this.totalHoursWorked = totalHoursWorked;
-        this.ratePerHour = ratePerHour;
         this.birthDate = birthDate;
         this.dateHired = dateHired;
+        this.totalHoursWorked = 0.0f;
+        this.ratePerHour = 0.0;
+    }
+
+    public HourlyEmployee(int empID, Name empName, MyDate birthDate, MyDate dateHired, float totalHoursWorked, double ratePerHour) {
+        this.empID = empID;
+        this.empName = empName;
+        this.birthDate = birthDate;
+        this.dateHired = dateHired;
+        setTotalHoursWorked(totalHoursWorked);
+        setRatePerHour(ratePerHour);
     }
 
     public int getEmpID() {
@@ -60,27 +51,11 @@ public class HourlyEmployee {
         this.empName = empName;
     }
 
-    public float getTotalHoursWorked() {
-        return totalHoursWorked;
-    }
-
-    public void setTotalHoursWorked(float totalHoursWorked) {
-        this.totalHoursWorked = totalHoursWorked;
-    }
-
-    public double getRatePerHour() {
-        return ratePerHour;
-    }
-
-    public void setRatePerHour(double ratePerHour) {
-        this.ratePerHour = ratePerHour;
-    }
-
-    public MyDate getBirthDate(){
+    public MyDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(MyDate birthDate){
+    public void setBirthDate(MyDate birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -92,36 +67,56 @@ public class HourlyEmployee {
         this.dateHired = dateHired;
     }
 
-    public double computeSalary(){
-        double regularHours = 40.0;
-        double overtime = 1.5;
-        double totalSalary = 0;
-        if(totalHoursWorked <= regularHours){
-            return totalHoursWorked * ratePerHour;
+    public float getTotalHoursWorked() {
+        return totalHoursWorked;
+    }
+
+    public void setTotalHoursWorked(float totalHoursWorked) {
+        if (totalHoursWorked >= 0) {
+            this.totalHoursWorked = totalHoursWorked;
+        } else {
+            this.totalHoursWorked = 0.0f;
         }
-        if (totalHoursWorked > regularHours){
-            double regularPay = regularHours * ratePerHour;
-            double overtimePay = (totalHoursWorked - regularHours) * (ratePerHour * overtime);
-            totalSalary = regularPay + overtimePay;
+    }
+
+    public double getRatePerHour() {
+        return ratePerHour;
+    }
+
+    public void setRatePerHour(double ratePerHour) {
+        if (ratePerHour >= 0) {
+            this.ratePerHour = ratePerHour;
+        } else {
+            this.ratePerHour = 0.0;
         }
-        return totalSalary;
+    }
+
+    public double computeSalary() {
+        if (this.totalHoursWorked <= 40) {
+            return this.totalHoursWorked * this.ratePerHour;
+        } else {
+            double regularPay = 40 * this.ratePerHour;
+            double overtimePay = (this.totalHoursWorked - 40) * (this.ratePerHour * 1.5);
+            return regularPay + overtimePay;
+        }
+    }
+
+    public double computeSalary(int currentMonth) {
+        double salary = computeSalary();
+        if (this.birthDate != null && this.birthDate.getMonth() == currentMonth) {
+            salary = salary + 5000.00;
+        }
+        return salary;
     }
 
     public void displayHourlyEmployee() {
-        System.out.printf("ID: %d | Name: %s | Hours: %.2f | Rate: ₱%.2f/hr%n",
-                empID, empName, totalHoursWorked, ratePerHour);
+        System.out.printf("ID: %d | Name: %s | DOB: %s | Hired: %s | Hours: %.2f | Rate: ₱%.2f/hr%n",
+                this.empID, this.empName, this.birthDate, this.dateHired, this.totalHoursWorked, this.ratePerHour);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Hourly Employee [ID: ").append(empID)
-                .append(", Name: ").append(empName)
-                .append(", Hours: ").append(totalHoursWorked)
-                .append(", Rate Per Hour: ").append(ratePerHour)
-                .append(", Total Salary: ").append(computeSalary())
-                .append("]");
-        return sb.toString();
+        return String.format("HourlyEmployee [ID: %d, Name: %s, DOB: %s, Hired: %s, Hours: %.2f, Rate: ₱%.2f, Total Salary: ₱%.2f]",
+                this.empID, this.empName, this.birthDate, this.dateHired, this.totalHoursWorked, this.ratePerHour, computeSalary());
     }
 }
-

@@ -3,71 +3,55 @@ package version2;
 public class CommissionEmployee {
     private int empID;
     private Name empName;
-    private double totalSale;
     private MyDate birthDate;
     private MyDate dateHired;
+    private double totalSale;
 
-    public CommissionEmployee(){
+    public CommissionEmployee() {
         this.empID = 0;
         this.empName = new Name();
+        this.birthDate = new MyDate();
+        this.dateHired = new MyDate();
         this.totalSale = 0.0;
-        this.birthDate = new MyDate();
-        this.dateHired = new MyDate();
     }
 
-    public CommissionEmployee(int empID, Name empName){
+    public CommissionEmployee(int empID, Name empName, MyDate birthDate, MyDate dateHired) {
         this.empID = empID;
         this.empName = empName;
-        this.totalSale = 0.0;
-        this.birthDate = new MyDate();
-        this.dateHired = new MyDate();
-    }
-
-    public CommissionEmployee(int empID, Name empName, double totalSale){
-        this.empID = empID;
-        this.empName = empName;
-        this.totalSale = totalSale;
-        this.birthDate = new MyDate();
-        this.dateHired = new MyDate();
-    }
-
-    public CommissionEmployee(int empID, Name empName, double totalSale, MyDate birthDate, MyDate dateHired){
-        this.empID = empID;
-        this.empName = empName;
-        this.totalSale = totalSale;
         this.birthDate = birthDate;
         this.dateHired = dateHired;
+        this.totalSale = 0.0;
     }
 
-    public int getEmpID(){
+    public CommissionEmployee(int empID, Name empName, MyDate birthDate, MyDate dateHired, double totalSale) {
+        this.empID = empID;
+        this.empName = empName;
+        this.birthDate = birthDate;
+        this.dateHired = dateHired;
+        setTotalSale(totalSale);
+    }
+
+    public int getEmpID() {
         return empID;
-
     }
-    public void setEmpID(int empID){
+
+    public void setEmpID(int empID) {
         this.empID = empID;
     }
 
-    public Name getEmpName(){
+    public Name getEmpName() {
         return empName;
-
     }
-    public void setEmpName(Name empName){
+
+    public void setEmpName(Name empName) {
         this.empName = empName;
     }
 
-    public double getTotalSale(){
-        return totalSale;
-    }
-
-    public void setTotalSale(double totalSale) {
-        this.totalSale = totalSale;
-    }
-
-    public MyDate getBirthDate(){
+    public MyDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(MyDate birthDate){
+    public void setBirthDate(MyDate birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -79,59 +63,48 @@ public class CommissionEmployee {
         this.dateHired = dateHired;
     }
 
-    public double computeSalary() {
-        double commissionRate = 0;
-        if (totalSale < 50000) {
-           commissionRate = 0.05;
-        } else if (totalSale < 100000) {
-            commissionRate = 0.10;
-        } else if (totalSale < 500000) {
-            commissionRate = 0.15;
+    public double getTotalSale() {
+        return totalSale;
+    }
+
+    public void setTotalSale(double totalSale) {
+        if (totalSale >= 0) {
+            this.totalSale = totalSale;
         } else {
-            commissionRate = 0.20;
+            this.totalSale = 0.0;
         }
-        return totalSale * commissionRate;
+    }
+
+    public double computeSalary() {
+        double rate = 0.0;
+        if (this.totalSale < 50000.00) {
+            rate = 0.05;
+        } else if (this.totalSale < 100000.00) {
+            rate = 0.10;
+        } else if (this.totalSale < 500000.00) {
+            rate = 0.15;
+        } else {
+            rate = 0.20;
+        }
+        return this.totalSale * rate;
     }
 
     public double computeSalary(int currentMonth) {
-        double commissionRate = 0;
-        if (totalSale < 50000) {
-            commissionRate = 0.05;
-        } else if (totalSale < 100000) {
-            commissionRate = 0.10;
-        } else if (totalSale < 500000) {
-            commissionRate = 0.15;
-        } else {
-            commissionRate = 0.20;
+        double salary = computeSalary();
+        if (this.birthDate != null && this.birthDate.getMonth() == currentMonth) {
+            salary = salary + 5000.00;
         }
-
-        double totalSalary = totalSale * commissionRate;
-
-        if (birthDate.getMonth() == currentMonth){
-            totalSalary += 5000.00;
-        }
-
-        return totalSalary;
+        return salary;
     }
 
     public void displayCommissionEmployee() {
-        System.out.printf("ID: %d | Name: %s | Total Sales: ₱%,.2f%n",
-                empID, empName, totalSale);
+        System.out.printf("ID: %d | Name: %s | DOB: %s | Hired: %s | Total Sale: ₱%.2f%n",
+                this.empID, this.empName, this.birthDate, this.dateHired, this.totalSale);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Commission Employee [ID: ").append(empID)
-                .append(", Name: ").append(empName)
-                .append(", Sales: ₱").append(String.format("%,.2f", totalSale))
-                .append(", Total Salary: ₱").append(String.format("%,.2f", computeSalary()))
-                .append("]");
-        sb.append("Check for Bonus for Employee [ID: ").append(empID)
-                .append(", Name: ").append(empName)
-                .append(", Sales: ₱").append(String.format("%,.2f", totalSale))
-                .append(", Total Salary: ₱").append(String.format("%,.2f", computeSalary()))
-                .append("]");
-        return sb.toString();
+        return String.format("CommissionEmployee [ID: %d, Name: %s, DOB: %s, Hired: %s, Sales: ₱%.2f, Total Salary: ₱%.2f]",
+                this.empID, this.empName, this.birthDate, this.dateHired, this.totalSale, computeSalary());
     }
 }
